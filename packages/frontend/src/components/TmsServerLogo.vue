@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 import { openInstanceMenu } from '@/ui/_common_/common.js';
 
@@ -73,7 +73,7 @@ const tooltipRef = computed(() => {
 
 		> .iconOnly,
 		> .banner {
-			outline: var(--focus) solid 2px;
+			outline: var(--MI_THEME-focus) solid 2px;
 			outline-offset: 2px;
 		}
 	}
@@ -95,13 +95,13 @@ const tooltipRef = computed(() => {
 	background-position: center center;
 
 	&.onOverlay {
-		-webkit-backdrop-filter: var(--blur, blur(0px)); // https://stackoverflow.com/questions/36378512
-		backdrop-filter: var(--blur, blur(0px)); // https://stackoverflow.com/questions/36378512
+		-webkit-backdrop-filter: var(--MI-blur, blur(0px)); // https://stackoverflow.com/questions/36378512
+		backdrop-filter: var(--MI-blur, blur(0px)); // https://stackoverflow.com/questions/36378512
 
 		.bannerInner {
 			background-color: #00000040;
-			-webkit-backdrop-filter: var(--blur, blur(2px));
-			backdrop-filter: var(--blur, blur(2px));
+			-webkit-backdrop-filter: var(--MI-blur, blur(2px));
+			backdrop-filter: var(--MI-blur, blur(2px));
 		}
 
 		.name {
@@ -137,12 +137,12 @@ const tooltipRef = computed(() => {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	font-weight: 700;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 
 .mark {
 	display: flex;
 	margin: 0 6px 0 auto;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 </style>

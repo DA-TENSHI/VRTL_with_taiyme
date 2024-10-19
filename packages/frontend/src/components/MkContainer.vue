@@ -29,8 +29,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@afterLeave="afterLeave"
 	>
 		<div v-show="showBody" ref="contentEl" :class="[$style.content, { [$style.omitted]: omitted }]">
-			<slot></slot>
-			<button v-if="omitted" :class="$style.fade" class="_button" @click="() => { ignoreOmit = true; omitted = false; }">
+				<slot></slot>
+				<button v-if="omitted" :class="$style.fade" class="_button" @click="() => { ignoreOmit = true; omitted = false; }">
 				<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
 			</button>
 		</div>
@@ -126,7 +126,6 @@ onUnmounted(() => {
 <style lang="scss" module>
 .transition_toggle_enterActive,
 .transition_toggle_leaveActive {
-	overflow-y: hidden; // fallback (overflow-y: clip)
 	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
 }
@@ -137,7 +136,6 @@ onUnmounted(() => {
 
 .root {
 	position: relative;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: content;
 
@@ -167,11 +165,11 @@ onUnmounted(() => {
 
 .header {
 	position: sticky;
-	top: var(--stickyTop, 0px);
+	top: var(--MI-stickyTop, 0px);
 	left: 0;
-	color: var(--panelHeaderFg);
-	background: var(--panelHeaderBg);
-	border-bottom: solid 0.5px var(--panelHeaderDivider);
+	color: var(--MI_THEME-panelHeaderFg);
+	background: var(--MI_THEME-panelHeaderBg);
+	border-bottom: solid 0.5px var(--MI_THEME-panelHeaderDivider);
 	z-index: 2;
 	line-height: 1.4em;
 }
@@ -203,39 +201,42 @@ onUnmounted(() => {
 }
 
 .content {
-	--stickyTop: 0px;
+	--MI-stickyTop: 0px;
+}
 
-	&.omitted {
-		position: relative;
-		min-height: 64px; // .fade
-		max-height: var(--maxHeight);
-		overflow: hidden;
+.omitted {
+	position: relative;
+	min-height: 64px; // .showMoreFade
+	max-height: var(--maxHeight);
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
+}
 
-		> .fade {
-			display: block;
-			position: absolute;
-			z-index: 10;
-			bottom: 0;
-			left: 0;
-			width: 100%;
-			height: 64px; // .omitted
-			background: linear-gradient(0deg, var(--panel), var(--X15));
+.showMoreFade {
+	display: block;
+	position: absolute;
+	z-index: 10;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 64px; // .omitted
+	background: linear-gradient(0deg, var(--MI_THEME-panel), color(from var(--MI_THEME-panel) srgb r g b / 0));
+}
 
-			> .fadeLabel {
-				display: inline-block;
-				background: var(--panel);
-				padding: 6px 10px;
-				font-size: 0.8em;
-				border-radius: 999px;
-				box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
-			}
-
-			&:hover {
-				> .fadeLabel {
-					background: var(--panelHighlight);
-				}
-			}
+.showMoreFade {
+	&:hover {
+		> .fadeLabel {
+			background: var(--MI_THEME-panelHighlight);
 		}
+	}
+
+	> .fadeLabel {
+		display: inline-block;
+		background: var(--MI_THEME-panel);
+		padding: 6px 10px;
+		font-size: 0.8em;
+		border-radius: 999px;
+		box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 	}
 }
 

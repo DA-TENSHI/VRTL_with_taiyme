@@ -70,7 +70,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div style="overflow: hidden;">
 								<MkUserCardMini
 									:user="user"
-									:withChart="false"
 									:class="$style.userSelectedCard"
 								/>
 							</div>
@@ -112,10 +111,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, shallowRef, toRef } from 'vue';
+import { host as localHost } from '@@/js/config.js';
 import type * as Misskey from 'misskey-js';
 import type { Paging } from '@/components/MkPagination.vue';
 import { $i } from '@/account.js';
-import { host as localHost } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
@@ -333,7 +332,7 @@ async function search() {
 	width: 100%;
 	height: 100%;
 	padding: 12px;
-	border: 2px dashed var(--fgTransparent);
+	border: 2px dashed var(--MI_THEME-fgTransparent);
 }
 
 .userSelectButtonInner {

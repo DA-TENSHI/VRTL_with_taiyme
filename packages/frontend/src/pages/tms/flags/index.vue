@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, shallowRef } from 'vue';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -61,7 +61,7 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .footer {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 }
 </style>

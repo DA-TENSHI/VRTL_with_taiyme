@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkLoading v-if="fetching"/>
 		<div v-else class="users">
 			<MkA v-for="user in newUsers" :key="user.id" :to="`/admin/user/${user.id}`" class="user">
-				<MkUserCardMini :user="user"/>
+				<MkUserCardMini :user="user" withChart/>
 			</MkA>
 		</div>
 	</Transition>
@@ -19,8 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useInterval } from '@/scripts/use-interval.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { defaultStore } from '@/store.js';
 

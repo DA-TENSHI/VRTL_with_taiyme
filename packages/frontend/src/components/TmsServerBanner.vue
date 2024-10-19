@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 
 const serverRef = computed(() => {
@@ -41,13 +41,13 @@ const serverRef = computed(() => {
 	background-position: center center;
 
 	&.onOverlay {
-		-webkit-backdrop-filter: var(--blur, blur(0px)); // https://stackoverflow.com/questions/36378512
-		backdrop-filter: var(--blur, blur(0px)); // https://stackoverflow.com/questions/36378512
+		-webkit-backdrop-filter: var(--MI-blur, blur(0px)); // https://stackoverflow.com/questions/36378512
+		backdrop-filter: var(--MI-blur, blur(0px)); // https://stackoverflow.com/questions/36378512
 
 		.bannerInner {
 			background-color: #00000040;
-			-webkit-backdrop-filter: var(--blur, blur(2px));
-			backdrop-filter: var(--blur, blur(2px));
+			-webkit-backdrop-filter: var(--MI-blur, blur(2px));
+			backdrop-filter: var(--MI-blur, blur(2px));
 		}
 
 		.name {
@@ -80,6 +80,6 @@ const serverRef = computed(() => {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	font-weight: 700;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 </style>

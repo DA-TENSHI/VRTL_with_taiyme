@@ -6,12 +6,11 @@
 import { Injectable } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
 import { MetaService } from '@/core/MetaService.js';
-import { VmimiRelayService } from '@/core/VmimiRelayService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
-import type { JsonObject } from '@/misc/json-value.js';
+import { VmimiRelayTimelineService } from '@/core/VmimiRelayTimelineService.js';
+import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class VmimiRelayTimelineChannel extends Channel {
@@ -21,28 +20,29 @@ class VmimiRelayTimelineChannel extends Channel {
 	private withRenotes: boolean;
 	private withReplies: boolean;
 	private withFiles: boolean;
+	private withLocalOnly: boolean;
 
 	constructor(
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
-		private vmimiRelayService: VmimiRelayService,
+		private vmimiRelayTimelineService: VmimiRelayTimelineService,
 
 		id: string,
 		connection: Channel['connection'],
 	) {
 		super(id, connection);
-		//this.onNote = this.onNote.bind(this);
 	}
 
 	@bindThis
-	public async init(params: JsonObject) {
+	public async init(params: any) {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
-		if (!policies.gtlAvailable) return;
+		if (!policies.vrtlAvailable) return;
 
-		this.withRenotes = !!(params.withRenotes ?? true);
-		this.withReplies = !!(params.withReplies ?? true);
-		this.withFiles = !!(params.withFiles ?? false);
+		this.withRenotes = params.withRenotes ?? true;
+		this.withReplies = params.withReplies ?? false;
+		this.withFiles = params.withFiles ?? false;
+		this.withLocalOnly = params.withLocalOnly ?? true;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -52,9 +52,17 @@ class VmimiRelayTimelineChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
+		if (!this.vmimiRelayTimelineService.isRelayedInstance(note.user.host ?? null)) return;
+		if (!this.withLocalOnly && note.localOnly) return;
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
-		if (!this.vmimiRelayService.isRelayedInstance(note.user.host ?? null)) return;
+
+		// 関係ない返信は除外
+		if (note.reply && this.user && !this.following[note.userId]?.withReplies && !this.withReplies) {
+			const reply = note.reply;
+			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
+			if (reply.userId !== this.user.id && note.userId !== this.user.id && reply.userId !== note.userId) return;
+		}
 
 		if (isRenotePacked(note) && !isQuotePacked(note) && !this.withRenotes) return;
 
@@ -65,11 +73,6 @@ class VmimiRelayTimelineChannel extends Channel {
 				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
 				note.renote.myReaction = myRenoteReaction;
 			}
-		}
-
-		if (note.reply && this.user && !this.following[note.userId]?.withReplies && !this.withReplies) {
-			const reply = note.reply;
-			if (reply.userId !== this.user.id && note.userId !== this.user.id && reply.userId !== note.userId) return;
 		}
 
 		this.connection.cacheNote(note);
@@ -94,7 +97,7 @@ export class VmimiRelayTimelineChannelService implements MiChannelService<false>
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
-		private vmimiRelayService: VmimiRelayService,
+		private vmimiRelayTimelineService: VmimiRelayTimelineService,
 	) {
 	}
 
@@ -104,7 +107,7 @@ export class VmimiRelayTimelineChannelService implements MiChannelService<false>
 			this.metaService,
 			this.roleService,
 			this.noteEntityService,
-			this.vmimiRelayService,
+			this.vmimiRelayTimelineService,
 			id,
 			connection,
 		);

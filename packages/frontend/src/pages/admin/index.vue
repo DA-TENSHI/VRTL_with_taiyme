@@ -4,39 +4,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-if="childPageMetadata == null"/></template>
-	<template #default>
-		<div ref="rootEl" :class="[$style.root, { [$style.wide]: isWide }]">
-			<div v-if="showNav" :class="$style.navRoot">
-				<MkSpacer :contentMax="700" :marginMin="16">
-					<div class="_gaps_m">
-						<div>
-							<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.serverIcon"/>
-						</div>
+	<MkStickyContainer>
+		<template #header><MkPageHeader v-if="childPageMetadata == null"/></template>
+		<template #default>
+			<div ref="rootEl" :class="[$style.root, { [$style.wide]: isWide }]">
+				<div v-if="showNav" :class="$style.navRoot">
+					<MkSpacer :contentMax="700" :marginMin="16">
+						<div class="_gaps_m">
+							<div>
+								<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.serverIcon"/>
+							</div>
 
-						<div :class="[$style.navInfoList, '_gaps_s']">
-							<MkInfo v-if="thereIsUnresolvedAbuseReport" warn>{{ i18n.ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ i18n.ts.check }}</MkA></MkInfo>
-							<MkInfo v-if="noMaintainerInformation" warn>{{ i18n.ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-							<MkInfo v-if="noInquiryUrl" warn>{{ i18n.ts.noInquiryUrlWarning }} <MkA to="/admin/moderation" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-							<MkInfo v-if="noBotProtection" warn>{{ i18n.ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-							<MkInfo v-if="noEmailServer" warn>{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-						</div>
+							<div :class="[$style.navInfoList, '_gaps_s']">
+								<MkInfo v-if="thereIsUnresolvedAbuseReport" warn>{{ i18n.ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ i18n.ts.check }}</MkA></MkInfo>
+								<MkInfo v-if="noMaintainerInformation" warn>{{ i18n.ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+								<MkInfo v-if="noInquiryUrl" warn>{{ i18n.ts.noInquiryUrlWarning }} <MkA to="/admin/moderation" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+								<MkInfo v-if="noBotProtection" warn>{{ i18n.ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+								<MkInfo v-if="noEmailServer" warn>{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+							</div>
 
-						<TmsSuperMenu :def="menuDef" :wideMode="isWide"></TmsSuperMenu>
+							<TmsSuperMenu :def="menuDef" :wideMode="isWide"></TmsSuperMenu>
+						</div>
+					</MkSpacer>
+				</div>
+				<div v-if="showMain" :class="$style.mainRoot">
+					<div style="container-type: inline-size;">
+						<RouterView nested/>
 					</div>
-				</MkSpacer>
-			</div>
-			<div v-if="showMain" :class="$style.mainRoot">
-				<div style="container-type: inline-size;">
-					<RouterView/>
 				</div>
 			</div>
-		</div>
-		<MkFooterSpacer v-if="!isWide"/>
+			<MkFooterSpacer v-if="!isWide"/>
+		</template>
+	</MkStickyContainer>
 	</template>
-</MkStickyContainer>
-</template>
 
 <script lang="ts" setup>
 import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
@@ -287,16 +287,6 @@ const menuDef = computed<ISuperMenuDefinitions>(() => [{
 		to: '/admin/relays',
 		active: currentPage.value?.route.name === 'relays',
 	}, {
-		icon: 'ti ti-ban',
-		text: i18n.ts.instanceBlocking,
-		to: '/admin/instance-block',
-		active: currentPage.value?.route.name === 'instance-block',
-	}, {
-		icon: 'ti ti-ghost',
-		text: i18n.ts.proxyAccount,
-		to: '/admin/proxy-account',
-		active: currentPage.value?.route.name === 'proxy-account',
-	}, {
 		icon: 'ti ti-link',
 		text: i18n.ts.externalServices,
 		to: '/admin/external-services',
@@ -307,10 +297,10 @@ const menuDef = computed<ISuperMenuDefinitions>(() => [{
 		to: '/admin/system-webhook',
 		active: currentPage.value?.route.name === 'system-webhook',
 	}, {
-		icon: 'ti ti-adjustments',
-		text: i18n.ts.other,
-		to: '/admin/other-settings',
-		active: currentPage.value?.route.name === 'other-settings',
+		icon: 'ti ti-bolt',
+		text: i18n.ts.performance,
+		to: '/admin/performance',
+		active: currentPage.value?.route.name === 'performance',
 	}],
 }, {
 	title: i18n.ts.info,
@@ -386,7 +376,7 @@ function adminLookup(ev: MouseEvent) {
 			height: 100%;
 			max-width: 280px;
 			overflow: auto;
-			border-right: solid 0.5px var(--divider);
+			border-right: solid 0.5px var(--MI_THEME-divider);
 			box-sizing: border-box;
 
 			@supports (height: 100cqh) {

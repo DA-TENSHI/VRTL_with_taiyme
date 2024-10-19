@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div><i class="ti ti-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="flash.createdAt" mode="detail"/></div>
 					</div>
 				</div>
-				<MkA v-if="$i && $i.id === flash.userId" :to="`/play/${flash.id}/edit`" style="color: var(--accent);">{{ i18n.ts._play.editThisPage }}</MkA>
+				<MkA v-if="$i && $i.id === flash.userId" :to="`/play/${flash.id}/edit`" style="color: var(--MI_THEME-accent);">{{ i18n.ts._play.editThisPage }}</MkA>
 				<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 			</div>
 			<MkError v-else-if="error" @retry="fetchFlash()"/>
@@ -65,11 +65,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onDeactivated, onUnmounted, Ref, ref, watch, shallowRef, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import { Interpreter, Parser, values } from '@syuilo/aiscript';
+import { url } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { url } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkAsUi from '@/components/MkAsUi.vue';
@@ -104,18 +104,23 @@ function fetchFlash() {
 function share(ev: MouseEvent) {
 	if (!flash.value) return;
 
-	os.popupMenu([
-		{
-			text: i18n.ts.shareWithNote,
-			icon: 'ti ti-pencil',
-			action: shareWithNote,
-		},
-		...(isSupportShare() ? [{
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
+		text: i18n.ts.shareWithNote,
+		icon: 'ti ti-pencil',
+		action: shareWithNote,
+	});
+
+	if (isSupportShare()) {
+		menuItems.push({
 			text: i18n.ts.share,
 			icon: 'ti ti-share',
 			action: shareWithNavigator,
-		}] : []),
-	], ev.currentTarget ?? ev.target);
+		});
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 function copyLink() {
@@ -362,7 +367,7 @@ definePageMetadata(() => ({
 				justify-content: center;
 				gap: 12px;
 				padding: 16px;
-				border-bottom: 1px solid var(--divider);
+				border-bottom: 1px solid var(--MI_THEME-divider);
 
 				&:last-child {
 					border-bottom: none;

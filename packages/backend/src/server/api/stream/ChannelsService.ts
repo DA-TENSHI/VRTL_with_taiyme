@@ -58,7 +58,7 @@ export class ChannelsService {
 			case 'hybridTimeline': return this.hybridTimelineChannelService;
 			case 'globalTimeline': return this.globalTimelineChannelService;
 			case 'vmimiRelayTimeline': return this.vmimiRelayTimelineChannelService;
-			case 'vmimiHybridTimeline': return this.vmimiHybridTimelineChannelService;
+			case 'vmimiRelayHybridTimeline': return this.vmimiHybridTimelineChannelService;
 			case 'userList': return this.userListChannelService;
 			case 'hashtag': return this.hashtagChannelService;
 			case 'roleTimeline': return this.roleTimelineChannelService;

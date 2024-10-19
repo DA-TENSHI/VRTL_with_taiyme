@@ -17,8 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-for="i in (steps + 1)" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
 			</div>
 			<div
-				ref="thumbEl" class="thumb" :style="{ left: thumbPosition + 'px' }"
-				@mousedown="onMousedown" @touchstart="onMousedown"
+				ref="thumbEl"
+				class="thumb"
+				:style="{ left: thumbPosition + 'px' }"
+				@mouseenter.passive="onMouseenter"
+				@mousedown="onMousedown"
+				@touchstart="onMousedown"
 			></div>
 		</div>
 	</div>
@@ -30,6 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { isTouchUsing } from '@/scripts/touch.js';
 import { popup } from '@/os.js';
 
 const props = withDefaults(defineProps<{
@@ -108,12 +113,36 @@ const steps = computed(() => {
 	}
 });
 
-const onMousedown = (ev: MouseEvent | TouchEvent) => {
+const tooltipForDragShowing = ref(false);
+const tooltipForHoverShowing = ref(false);
+
+function onMouseenter() {
+	if (isTouchUsing) return;
+
+	tooltipForHoverShowing.value = true;
+
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
+		showing: computed(() => tooltipForHoverShowing.value && !tooltipForDragShowing.value),
+		text: computed(() => {
+			return props.textConverter(finalValue.value);
+		}),
+		targetElement: thumbEl,
+	}, {
+		closed: () => dispose(),
+	});
+
+	thumbEl.value!.addEventListener('mouseleave', () => {
+		tooltipForHoverShowing.value = false;
+	}, { once: true, passive: true });
+}
+
+function onMousedown(ev: MouseEvent | TouchEvent) {
 	ev.preventDefault();
 
-	const tooltipShowing = ref(true);
+	tooltipForDragShowing.value = true;
+
 	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
-		showing: tooltipShowing,
+		showing: tooltipForDragShowing,
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
@@ -144,7 +173,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 
 	const onMouseup = () => {
 		document.head.removeChild(style);
-		tooltipShowing.value = false;
+		tooltipForDragShowing.value = false;
 		window.removeEventListener('mousemove', onDrag);
 		window.removeEventListener('touchmove', onDrag);
 		window.removeEventListener('mouseup', onMouseup);
@@ -161,7 +190,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 	window.addEventListener('touchmove', onDrag, { passive: false });
 	window.addEventListener('mouseup', onMouseup, { passive: true, once: true });
 	window.addEventListener('touchend', onMouseup, { passive: true, once: true });
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -183,7 +212,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 	> .caption {
 		font-size: 0.85em;
 		padding: 8px 0 0 0;
-		color: var(--fgTransparentWeak);
+		color: var(--MI_THEME-fgTransparentWeak);
 
 		&:empty {
 			display: none;
@@ -195,8 +224,8 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 
 	> .body {
 		padding: 7px 12px;
-		background: var(--panel);
-		border: solid 1px var(--panel);
+		background: var(--MI_THEME-panel);
+		border: solid 1px var(--MI_THEME-panel);
 		border-radius: 6px;
 
 		> .container {
@@ -222,7 +251,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 					top: 0;
 					left: 0;
 					height: 100%;
-					background: var(--accent);
+					background: var(--MI_THEME-accent);
 					opacity: 0.5;
 				}
 			}
@@ -244,7 +273,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 					width: $tickWidth;
 					height: 3px;
 					margin-left: - math.div($tickWidth, 2);
-					background: var(--divider);
+					background: var(--MI_THEME-divider);
 					border-radius: 999px;
 				}
 			}
@@ -254,11 +283,11 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 				width: $thumbWidth;
 				height: $thumbHeight;
 				cursor: grab;
-				background: var(--accent);
+				background: var(--MI_THEME-accent);
 				border-radius: 999px;
 
 				&:hover {
-					background: var(--accentLighten);
+					background: var(--MI_THEME-accentLighten);
 				}
 			}
 		}

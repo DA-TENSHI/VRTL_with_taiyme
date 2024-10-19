@@ -36,12 +36,12 @@ import { AntennaChannelService } from './api/stream/channels/antenna.js';
 import { ChannelChannelService } from './api/stream/channels/channel.js';
 import { DriveChannelService } from './api/stream/channels/drive.js';
 import { GlobalTimelineChannelService } from './api/stream/channels/global-timeline.js';
+import { VmimiRelayTimelineChannelService } from './api/stream/channels/vmimi-relay-timeline.js';
+import { VmimiHybridTimelineChannelService } from './api/stream/channels/vmimi-hybrid-timeline.js';
 import { HashtagChannelService } from './api/stream/channels/hashtag.js';
 import { HomeTimelineChannelService } from './api/stream/channels/home-timeline.js';
 import { HybridTimelineChannelService } from './api/stream/channels/hybrid-timeline.js';
 import { LocalTimelineChannelService } from './api/stream/channels/local-timeline.js';
-import { VmimiRelayTimelineChannelService } from './api/stream/channels/vmimi-relay-timeline.js';
-import { VmimiHybridTimelineChannelService } from './api/stream/channels/vmimi-hybrid-timeline.js';
 
 import { QueueStatsChannelService } from './api/stream/channels/queue-stats.js';
 import { ServerStatsChannelService } from './api/stream/channels/server-stats.js';
@@ -49,6 +49,7 @@ import { UserListChannelService } from './api/stream/channels/user-list.js';
 import { RoleTimelineChannelService } from './api/stream/channels/role-timeline.js';
 import { ReversiChannelService } from './api/stream/channels/reversi.js';
 import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js';
+import { SigninWithPasskeyApiService } from './api/SigninWithPasskeyApiService.js';
 
 @Module({
 	imports: [
@@ -74,6 +75,7 @@ import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js
 		AuthenticateService,
 		RateLimiterService,
 		SigninApiService,
+		SigninWithPasskeyApiService,
 		SigninService,
 		SignupApiService,
 		StreamingApiServerService,
@@ -83,6 +85,8 @@ import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js
 		ChannelChannelService,
 		DriveChannelService,
 		GlobalTimelineChannelService,
+		VmimiRelayTimelineChannelService,
+		VmimiHybridTimelineChannelService,
 		HashtagChannelService,
 		RoleTimelineChannelService,
 		ReversiChannelService,
@@ -90,8 +94,6 @@ import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js
 		HomeTimelineChannelService,
 		HybridTimelineChannelService,
 		LocalTimelineChannelService,
-		VmimiRelayTimelineChannelService,
-		VmimiHybridTimelineChannelService,
 
 		QueueStatsChannelService,
 		ServerStatsChannelService,
